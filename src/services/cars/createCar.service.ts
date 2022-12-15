@@ -14,8 +14,8 @@ const createCarService = async (carData: ICarRequest): Promise<Car> => {
     throw new AppError("You must add at least one image to your car.");
   }
 
-  if (carPhotos.length > 5) {
-    throw new AppError("You can't add more than 5 images to your car.");
+  if (carPhotos.length > 6) {
+    throw new AppError("You can't add more than 6 images to your car.");
   }
 
   const newCar = carRepository.create({

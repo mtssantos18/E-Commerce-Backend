@@ -4,7 +4,10 @@ import { Car } from "../../entities/cars.entity";
 import AppError from "../../errors/AppError";
 import { ICarUpdateRequest } from "../../interfaces/cars";
 
-const updateCarService = async (carId: string, carInfo: ICarUpdateRequest) => {
+const updateCarService = async (
+  carId: string,
+  carInfo: ICarUpdateRequest
+): Promise<Car> => {
   if (carId.length !== 36) {
     throw new AppError("Invalid id format.");
   }
@@ -32,8 +35,8 @@ const updateCarService = async (carId: string, carInfo: ICarUpdateRequest) => {
       throw new AppError("You must add at least one image to your car.");
     }
 
-    if (carInfo.carPhotos.length > 5) {
-      throw new AppError("You can't add more than 5 images to your car.");
+    if (carInfo.carPhotos.length > 6) {
+      throw new AppError("You can't add more than 6 images to your car.");
     }
 
     await carImagesRepository.delete({ car: { id: car.id } });
@@ -47,7 +50,7 @@ const updateCarService = async (carId: string, carInfo: ICarUpdateRequest) => {
 
   const updatedCar = await carRepository.findOneBy({ id: carId });
 
-  return updatedCar;
+  return updatedCar!;
 };
 
 export default updateCarService;
