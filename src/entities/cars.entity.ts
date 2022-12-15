@@ -16,10 +16,10 @@ export class Car {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
   description: string;
 
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   km: number;
 
   @Column()
