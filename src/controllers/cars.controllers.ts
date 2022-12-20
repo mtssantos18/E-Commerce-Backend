@@ -3,6 +3,7 @@ import { ICarRequest, ICarUpdateRequest } from "../interfaces/cars";
 import createCarService from "../services/cars/createCar.service";
 import deleteCarService from "../services/cars/deleteCar.service";
 import listCarsService from "../services/cars/listCars.service";
+import listSpecificCarService from "../services/cars/listSpecificCar.service";
 import updateCarService from "../services/cars/updateCar.service";
 
 export const createCarController = async (req: Request, res: Response) => {
@@ -17,6 +18,17 @@ export const listCarsController = async (req: Request, res: Response) => {
   const cars = await listCarsService();
 
   return res.status(200).json(cars);
+};
+
+export const listSpecificCarController = async (
+  req: Request,
+  res: Response
+) => {
+  const { carId } = req.params;
+
+  const car = await listSpecificCarService(carId);
+
+  return res.status(200).json(car);
 };
 
 export const updateCarController = async (req: Request, res: Response) => {
