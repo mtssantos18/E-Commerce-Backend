@@ -35,9 +35,7 @@ const createCarService = async (carData: ICarRequest): Promise<Car> => {
     await carImagesRepository.save(newPhoto);
   });
 
-  const showCar = await carRepository.findOneBy({ id: newCar.id });
-
-  return showCar!;
+  return newCar;
 };
 
 export default createCarService;
