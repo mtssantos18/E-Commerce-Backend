@@ -2,14 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { CarImages } from "./carImages.entity";
+import { User } from "./users.entity";
+import { VehicleImages } from "./vehicleImages.entity";
 
-@Entity("car")
-export class Car {
+@Entity("vehicle")
+export class Vehicle {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -31,12 +33,20 @@ export class Car {
   @Column({ type: "decimal", precision: 10, scale: 2 })
   price: number;
 
+  @Column()
+  type: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => CarImages, (carImages) => carImages.car, { eager: true })
-  carImages: CarImages[];
+  @OneToMany(() => VehicleImages, (vehicleImages) => vehicleImages.vehicle, {
+    eager: true,
+  })
+  vehicleImages: VehicleImages[];
+
+  @ManyToOne(() => User, { eager: true })
+  user: User;
 }
