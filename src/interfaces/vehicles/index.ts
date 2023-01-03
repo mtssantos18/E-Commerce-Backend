@@ -1,19 +1,21 @@
-export interface ICarRequest {
+export interface IVehicleRequest {
   name: string;
   description: string;
   km: number;
   year: number;
   coverImage: string;
   price: number;
-  carPhotos: string[];
+  type: string;
+  vehiclePhotos: string[];
 }
 
-export interface ICarUpdateRequest {
+export interface IVehicleUpdateRequest {
   name?: string;
   description?: string;
   km?: number;
   year?: number;
   coverImage?: string;
   price?: number;
-  carPhotos?: string[];
+  type?: string;
+  vehiclePhotos?: string[];
 }
