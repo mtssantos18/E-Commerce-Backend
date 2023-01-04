@@ -1,14 +1,19 @@
 import AppDataSource from "../../data-source";
+import { User } from "../../entities/users.entity";
 import { VehicleImages } from "../../entities/vehicleImages.entity";
 import { Vehicle } from "../../entities/vehicles.entity";
 import AppError from "../../errors/AppError";
 import { IVehicleRequest } from "../../interfaces/vehicles";
 
 const createVehicleService = async (
-  vehicleData: IVehicleRequest
+  vehicleData: IVehicleRequest,
+  userId: string
 ): Promise<Vehicle> => {
+  const userRepository = AppDataSource.getRepository(User);
   const vehicleRepository = AppDataSource.getRepository(Vehicle);
   const vehicleImagesRepository = AppDataSource.getRepository(VehicleImages);
+
+  const user = await userRepository.findOneByOrFail({ id: userId });
 
   const {
     name,
@@ -37,6 +42,7 @@ const createVehicleService = async (
     coverImage,
     price,
     type,
+    user,
   });
 
   await vehicleRepository.save(newVehicle);

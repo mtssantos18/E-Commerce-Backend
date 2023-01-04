@@ -10,7 +10,10 @@ const listSpecificVehicleService = async (
   }
   const vehicleRepository = AppDataSource.getRepository(Vehicle);
 
-  const vehicle = await vehicleRepository.findOneBy({ id: vehicleId });
+  const vehicle = await vehicleRepository.findOne({
+    where: { id: vehicleId },
+    relations: { user: true },
+  });
 
   if (!vehicle) {
     throw new AppError("Vehicle not found.", 404);
