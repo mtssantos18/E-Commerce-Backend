@@ -9,7 +9,9 @@ import deleteVehicleService from "../services/vehicles/deleteVehicle.service";
 export const createVehicleController = async (req: Request, res: Response) => {
   const vehicleData: IVehicleRequest = req.body;
 
-  const newVehicle = await createVehicleService(vehicleData);
+  const userId = req.user.id;
+
+  const newVehicle = await createVehicleService(vehicleData, userId);
 
   return res.status(201).json(newVehicle);
 };

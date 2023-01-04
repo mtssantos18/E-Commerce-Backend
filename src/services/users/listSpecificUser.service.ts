@@ -9,7 +9,10 @@ const listSpecificUserService = async (userId: string): Promise<User> => {
 
   const userRepository = AppDataSource.getRepository(User);
 
-  const user = await userRepository.findOneBy({ id: userId });
+  const user = await userRepository.findOne({
+    where: { id: userId },
+    relations: { vehicle: true },
+  });
 
   if (!user) {
     throw new AppError("User not found.", 404);

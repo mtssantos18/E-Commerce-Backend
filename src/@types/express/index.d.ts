@@ -8,6 +8,7 @@ declare global {
         email: string;
         cpf: string;
         isSeller: boolean;
+        id: string;
       };
     }
   }

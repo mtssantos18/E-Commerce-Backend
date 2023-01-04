@@ -1,10 +1,10 @@
 import { compare } from "bcryptjs";
-import jwt from "jsonwebtoken";
-
 import AppDataSource from "../../data-source";
 import { User } from "../../entities/users.entity";
 import AppError from "../../errors/AppError";
 import { IUserLogin } from "../../interfaces/users";
+import jwt from "jsonwebtoken";
+import "dotenv/config";
 
 const createSessionService = async ({ email, password }: IUserLogin) => {
   const userRepository = AppDataSource.getRepository(User);

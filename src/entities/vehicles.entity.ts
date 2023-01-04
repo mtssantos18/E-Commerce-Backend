@@ -47,6 +47,6 @@ export class Vehicle {
   })
   vehicleImages: VehicleImages[];
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User)
   user: User;
 }
