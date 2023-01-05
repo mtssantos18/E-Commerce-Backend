@@ -893,3 +893,53 @@ No body returned for response
 | 404 Not Found   | Car not found.     |
 
 ---
+
+### 3. /login
+
+Rota destinada para fazer a autenticação de um usuário.
+
+### Endpoints
+
+| Método | Rota   | Descrição                   |
+| ------ | ------ | --------------------------- |
+| POST   | /login | Autenticação de um usuário. |
+
+### 3.1. **Login de Usuário**
+
+### `/login`
+
+### Exemplo de Request:
+
+```
+POST /login
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+{
+  "email": "matheus@mail.com",
+  "password": "1234"
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6Ik1hdGhldXMgU2FudG9zIiwiZW1haWwiOiJtYXRoZXVzQG1haWwuY29tIiwiY3BmIjoiMTExLjIyMi4zMzMtNTEiLCJpc1NlbGxlciI6dHJ1ZSwiaWF0IjoxNjcyOTM1MTM0LCJleHAiOjE2NzI5NTMxMzQsInN1YiI6IjFjZmVlZGU5LWMxOGQtNDVhOS1hN2MyLTNhNTA5NWZkZDc4NCJ9.GRohaqS1SM4C6PCCtkGsMwdBCd-g94d7d0TGObH-BWE"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro | Descrição                  |
+| -------------- | -------------------------- |
+| 403 Forbidden  | Invalid email or password. |
+
+---
