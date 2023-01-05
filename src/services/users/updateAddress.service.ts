@@ -9,7 +9,7 @@ const updateAddressService = async (
   userId: string
 ) => {
   if (userId.length !== 36) {
-    throw new AppError("Invalid id formart.", 400);
+    throw new AppError("Invalid id format.", 400);
   }
 
   const userRepository = AppDataSource.getRepository(User);

@@ -7,6 +7,7 @@ import {
   updateUserAddressController,
   updateUserController,
 } from "../controllers/users.controllers";
+import authTokenMiddleware from "../middlewares/authToken.middleware";
 import checkCpfMiddleware from "../middlewares/checkCpf.middleware";
 import checkEmailMiddleware from "../middlewares/checkEmail.middleware";
 
@@ -22,11 +23,16 @@ userRoutes.get("", listUsersController);
 userRoutes.get("/:userId", listSpecificUserController);
 userRoutes.patch(
   "/:userId",
+  authTokenMiddleware,
   checkEmailMiddleware,
   checkCpfMiddleware,
   updateUserController
 );
-userRoutes.patch("/address/:userId", updateUserAddressController);
-userRoutes.delete("/:userId", deleteUserController);
+userRoutes.patch(
+  "/address/:userId",
+  authTokenMiddleware,
+  updateUserAddressController
+);
+userRoutes.delete("/:userId", authTokenMiddleware, deleteUserController);
 
 export default userRoutes;
