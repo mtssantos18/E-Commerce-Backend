@@ -945,3 +945,509 @@ Content-type: application/json
 | 403 Forbidden  | Invalid email or password. |
 
 ---
+
+### 4. /comments
+
+O objeto Comment é definido como:
+
+| Campo     | Tipo        | Descrição                          |
+| --------- | ----------- | ---------------------------------- |
+| id        | uuid        | Identificador único do comentário. |
+| text      | string      | Comentário do usuário.             |
+| userId    | foreign key | Usuário dono do comentário.        |
+| vehicleId | foreign key | Veículo comentado pelo usuário.    |
+| createdAt | Date        | Data de registro do comentário.    |
+| updatedAt | string      | Data de atualização do comentário. |
+
+### Endpoints
+
+| Método | Rota                 | Descrição                       | Autorizaçao | Owner |
+| ------ | -------------------- | ------------------------------- | ----------- | ----- |
+| POST   | /comments            | Criação de um comentário.       | X           |       |
+| GET    | /comments            | Lista todos os comentários.     |             |       |
+| GET    | /comments/:commentId | Lista um comentário específico. |             |       |
+| PATCH  | /comments/:commentId | Atualiza o comentário.          | X           | x     |
+| DELETE | /comments/:commentId | Deleta o comentário.            | X           | x     |
+
+### 4.1. **Criação de Comentário**
+
+### `/comments`
+
+### Exemplo de Request:
+
+```
+POST /comments
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+{
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "vehicleId": "247db553-ccd4-448d-889d-d8b794c32b48"
+}
+```
+
+### Exemplo de Response:
+
+```
+201 Created
+```
+
+```json
+{
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegre",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
+    }
+  },
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  },
+  "id": "004a69bf-a799-4920-86f6-c549cacc7958",
+  "createdAt": "2023-01-06T18:28:42.664Z",
+  "updatedAt": "2023-01-06T18:28:42.664Z"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição                  |
+| --------------- | -------------------------- |
+| 400 Bad Request | You must create a text.    |
+| 400 Bad Request | You must send vehicleId.   |
+| 400 Bad Request | Vehicle invalid id format. |
+| 404 Not Found   | User not found.            |
+| 404 Not Found   | Vehicle not found.         |
+
+---
+
+### 4.2. **Listando Comentários**
+
+### `/comments`
+
+### Exemplo de Request:
+
+```
+GET /comments
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+[
+  {
+    "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+    "text": "Que carro bonito, e aparentemente está bem conservado!",
+    "createdAt": "2023-01-06T19:52:40.781Z",
+    "updatedAt": "2023-01-06T19:52:40.781Z",
+    "vehicle": {
+      "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+      "name": "Honda Civic 2020",
+      "description": "Carro 4p Flex 1.8",
+      "km": "38250.00",
+      "year": 2020,
+      "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+      "price": "120000.00",
+      "type": "car",
+      "createdAt": "2023-01-06T15:19:11.822Z",
+      "updatedAt": "2023-01-06T15:23:09.833Z",
+      "user": {
+        "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+        "fullName": "Matheus Santos",
+        "email": "matheus@mail.com",
+        "cpf": "111.222.333-51",
+        "cellPhone": "12 3445-4002",
+        "birthDate": "1995-11-18T02:00:00.000Z",
+        "description": "Oi eu sou Teteu vendedor Atualizado 2",
+        "isSeller": true,
+        "address": {
+          "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+          "street": "Rua deixe",
+          "number": "1214",
+          "complement": "casa",
+          "zipCode": "12061-000",
+          "city": "Taubatexas",
+          "state": "SP"
+        }
+      },
+      "vehicleImages": [
+        {
+          "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "09c42332-566e-4417-9afa-d09912282b1f",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        }
+      ]
+    },
+    "user": {
+      "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+      "fullName": "Rafael Santos",
+      "email": "rafael@mail.com",
+      "cpf": "121.234.323-60",
+      "cellPhone": "15 99120-1020",
+      "birthDate": "1998-08-24T03:00:00.000Z",
+      "description": "Comprador alegere",
+      "isSeller": false,
+      "address": {
+        "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+        "street": "Rua Dois",
+        "number": "2",
+        "complement": "casa",
+        "zipCode": "12061000",
+        "city": "Taubaté",
+        "state": "SP"
+      }
+    }
+  }
+]
+```
+
+### Possíveis Erros:
+
+Nenhum, o máximo que pode acontecer é retornar uma lista vazia.
+
+---
+
+### 4.3. **Listar Comentário por ID**
+
+### `/comments/:commentId`
+
+### Exemplo de Request:
+
+```
+GET /comments/:commentId
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "createdAt": "2023-01-06T19:52:40.781Z",
+  "updatedAt": "2023-01-06T19:52:40.781Z",
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "user": {
+      "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+      "fullName": "Matheus Santos",
+      "email": "matheus@mail.com",
+      "cpf": "111.222.333-51",
+      "cellPhone": "12 3445-4002",
+      "birthDate": "1995-11-18T02:00:00.000Z",
+      "description": "Oi eu sou Teteu vendedor Atualizado 2",
+      "isSeller": true,
+      "address": {
+        "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+        "street": "Rua deixe",
+        "number": "1214",
+        "complement": "casa",
+        "zipCode": "12061-000",
+        "city": "Taubatexas",
+        "state": "SP"
+      }
+    },
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  },
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegere",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
+    }
+  }
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição          |
+| --------------- | ------------------ |
+| 400 Bad Request | Invalid id format. |
+| 404 Not Found   | Comment not found. |
+
+---
+
+---
+
+### 4.4. **Atualizando um comentário**
+
+### `/comments/:commentId`
+
+### Exemplo de Request:
+
+```
+PATCH /comments/:commentId
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
+
+### Corpo da Requisição:
+
+```json
+{
+  "text": "Que carro bonito, comentário atualizado de novo."
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+  "text": "Que carro bonito, comentário atualizado de novo.",
+  "createdAt": "2023-01-06T19:52:40.781Z",
+  "updatedAt": "2023-01-06T19:58:17.756Z",
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegere",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
+    }
+  },
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  }
+}
+```
+
+---
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                                        |
+| ---------------- | ------------------------------------------------ |
+| 400 Bad Request  | Invalid id format.                               |
+| 400 Bad Request  | You cannot update property vehicle from comment. |
+| 404 Not Found    | Comment not found.                               |
+| 401 Unauthorized | You must be comment owner to access this.        |
+
+---
+
+### 4.5. **Deletar comentário por ID**
+
+### `/comments/:commentId`
+
+### Exemplo de Request:
+
+```
+DELETE /comments/:commentId
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+204 No Content
+```
+
+```json
+No body returned for response
+```
+
+### Possíveis Erros:
+
+| Código do Erro   | Descrição                                 |
+| ---------------- | ----------------------------------------- |
+| 400 Bad Request  | Invalid id format.                        |
+| 404 Not Found    | Comment not found.                        |
+| 401 Unauthorized | You must be comment owner to access this. |

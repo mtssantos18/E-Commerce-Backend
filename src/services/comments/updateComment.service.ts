@@ -7,6 +7,10 @@ const updateCommentService = async (
   { text, vehicleId }: ICommentUpdateRequest,
   commentId: string
 ) => {
+  if (commentId.length !== 36) {
+    throw new AppError("Invalid id format.");
+  }
+
   if (vehicleId) {
     throw new AppError("You cannot update property vehicle from comment.");
   }
