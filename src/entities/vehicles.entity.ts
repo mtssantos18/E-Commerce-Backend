@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Comment } from "./comments.entity";
 import { User } from "./users.entity";
 import { VehicleImages } from "./vehicleImages.entity";
 
@@ -49,4 +50,7 @@ export class Vehicle {
 
   @ManyToOne(() => User)
   user: User;
+
+  @OneToMany(() => Comment, (comment) => comment.vehicle)
+  comment: Comment[];
 }
