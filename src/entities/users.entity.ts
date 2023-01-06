@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Address } from "./addresses.entity";
+import { Comment } from "./comments.entity";
 import { Vehicle } from "./vehicles.entity";
 
 @Entity("user")
@@ -46,4 +47,7 @@ export class User {
 
   @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
   vehicle: Vehicle[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comment: Comment[];
 }
