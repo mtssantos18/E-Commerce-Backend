@@ -5,6 +5,7 @@ import listVehiclesService from "../services/vehicles/listVehicles.service";
 import listSpecificVehicleService from "../services/vehicles/listSpecificVehicle.service";
 import updateVehicleService from "../services/vehicles/updateVehicle.service";
 import deleteVehicleService from "../services/vehicles/deleteVehicle.service";
+import { instanceToPlain } from "class-transformer";
 
 export const createVehicleController = async (req: Request, res: Response) => {
   const vehicleData: IVehicleRequest = req.body;
@@ -19,7 +20,7 @@ export const createVehicleController = async (req: Request, res: Response) => {
 export const listVehiclesController = async (req: Request, res: Response) => {
   const vehicles = await listVehiclesService();
 
-  return res.status(200).json(vehicles);
+  return res.status(200).json(instanceToPlain(vehicles));
 };
 
 export const listSpecificVehicleController = async (
@@ -30,7 +31,7 @@ export const listSpecificVehicleController = async (
 
   const vehicle = await listSpecificVehicleService(vehicleId);
 
-  return res.status(200).json(vehicle);
+  return res.status(200).json(instanceToPlain(vehicle));
 };
 
 export const updateVehicleController = async (req: Request, res: Response) => {
