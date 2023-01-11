@@ -48,9 +48,11 @@ export class Vehicle {
   })
   vehicleImages: VehicleImages[];
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: "CASCADE" })
   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.vehicle)
+  @OneToMany(() => Comment, (comment) => comment.vehicle, {
+    onDelete: "CASCADE",
+  })
   comment: Comment[];
 }

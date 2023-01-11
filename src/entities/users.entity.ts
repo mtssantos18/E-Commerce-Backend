@@ -41,13 +41,13 @@ export class User {
   @Exclude()
   password: string;
 
-  @OneToOne(() => Address, { eager: true })
+  @OneToOne(() => Address, { eager: true, onDelete: "CASCADE" })
   @JoinColumn()
   address: Address;
 
-  @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.user, { onDelete: "CASCADE" })
   vehicle: Vehicle[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { onDelete: "CASCADE" })
   comment: Comment[];
 }

@@ -23,9 +23,9 @@ export class Comment {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, { eager: true, onDelete: "CASCADE" })
   user: User;
 
-  @ManyToOne(() => Vehicle, { eager: true })
+  @ManyToOne(() => Vehicle, { eager: true, onDelete: "CASCADE" })
   vehicle: Vehicle;
 }
