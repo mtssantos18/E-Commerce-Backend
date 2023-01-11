@@ -78,41 +78,456 @@ Prontinho, agora você pode seguir para pasta do Frontend.
 
 ## Endpoints Resumo
 
-### 1. /cars
+### 1. /users
 
 O objeto User é definido como:
 
-| Campo       | Tipo     | Descrição                      |
-| ----------- | -------- | ------------------------------ |
-| id          | uuid     | Identificador único do carro.  |
-| name        | string   | Nome do carro.                 |
-| description | string   | Descrição sobre o carro.       |
-| km          | string   | Quilometragem rodada do carro. |
-| year        | string   | Ano de fabricação do carro.    |
-| coverImage  | string   | Imagem de capa do carro.       |
-| price       | string   | Preço do carro.                |
-| carImages   | string[] | Galeria de fotos do carro.     |
-| createdAt   | Date     | Data de registro do carro.     |
-| updatedAt   | string   | Data de atualização do carro.  |
+| Campo       | Tipo        | Descrição                       |
+| ----------- | ----------- | ------------------------------- |
+| id          | uuid        | Identificador único do usuário. |
+| fullName    | string      | Nome completo do usuário.       |
+| email       | string      | Email do usuário.               |
+| cpf         | string      | Cpf do usuário.                 |
+| cellPhone   | string      | Telefone celular do usuário.    |
+| birthDate   | string      | Data de nascimento do usuário.  |
+| description | string      | Descrição do usuário.           |
+| isSeller    | string      | Tipo do usuário.                |
+| addressId   | foreign key | Endereço do usuário.            |
+
+O objeto Address é definido como:
+
+| Campo      | Tipo   | Descrição                                   |
+| ---------- | ------ | ------------------------------------------- |
+| id         | uuid   | Identificador único do endereço do usuário. |
+| street     | string | Nome da rua do usuário.                     |
+| number     | string | Número da casa do usuário.                  |
+| complement | string | Complemento da casa do usuário.             |
+| zipCode    | string | CEP do usuário.                             |
+| city       | string | Cidade do usuário.                          |
+| state      | string | Estado do usuário.                          |
 
 ### Endpoints
 
-| Método | Rota         | Descrição                  |
-| ------ | ------------ | -------------------------- |
-| POST   | /cars        | Criação de um carro.       |
-| GET    | /cars        | Lista todos os carros.     |
-| GET    | /cars/:carId | Lista um carro específico. |
-| PATCH  | /cars/:carId | Atualiza o carro.          |
-| DELETE | /cars/:carId | Deleta o carro.            |
+| Método | Rota                   | Descrição                       | Autorizaçao |
+| ------ | ---------------------- | ------------------------------- | ----------- |
+| POST   | /users                 | Criação de um usuário.          |             |
+| GET    | /users                 | Lista todos os usuários.        |             |
+| GET    | /users/:userId         | Lista um usuário específico.    |             |
+| PATCH  | /users/:userId         | Atualiza o usuário.             | X           |
+| PATCH  | /users/address/:userId | Atualiza o endereço do usuário. | X           |
+| DELETE | /users/:userId         | Deleta o usuário.               | X           |
 
-### 1.1. **Criação de Carro**
+### 1.1. **Criação de Usuário**
 
-### `/cars`
+### `/users`
 
 ### Exemplo de Request:
 
 ```
-POST /cars
+POST /users
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+{
+  "fullName": "Matheus da Silva Santos",
+  "email": "matheus@mail.com",
+  "cpf": "111.222.333-51",
+  "cellPhone": "12 99103-4002",
+  "birthDate": "1995-11-18",
+  "description": "Oi eu sou Matheus vendedor",
+  "isSeller": true,
+  "password": "1234",
+  "address": {
+    "street": "Rua dale",
+    "number": "1214",
+    "complement": "casa",
+    "zipCode": "12061-000",
+    "city": "Taubaté",
+    "state": "SP"
+  }
+}
+```
+
+### Exemplo de Response:
+
+```
+201 Created
+```
+
+```json
+{
+  "fullName": "Matheus da Silva Santos",
+  "email": "matheus@mail.com",
+  "cpf": "111.222.333-51",
+  "cellPhone": "12 99103-4002",
+  "birthDate": "1995-11-18",
+  "description": "Oi eu sou Matheus vendedor",
+  "isSeller": true,
+  "address": {
+    "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+    "street": "Rua dale",
+    "number": "1214",
+    "complement": "casa",
+    "zipCode": "12061-000",
+    "city": "Taubaté",
+    "state": "SP"
+  },
+  "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição                                       |
+| --------------- | ----------------------------------------------- |
+| 400 Bad Request | State must have 2 letters.                      |
+| 400 Bad Request | Full name cannot be bigger than 128 characters. |
+| 400 Bad Request | Email cannot be bigger than 128 characters.     |
+| 400 Bad Request | This CPF already exist.                         |
+| 400 Bad Request | This email already exist.                       |
+
+---
+
+### 1.2. **Listando Usuários**
+
+### `/users`
+
+### Exemplo de Request:
+
+```
+GET /users
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+[
+  {
+    "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+    "fullName": "Matheus Santos",
+    "email": "matheus@mail.com",
+    "cpf": "111.222.333-51",
+    "cellPhone": "12 3445-4002",
+    "birthDate": "1995-11-18T02:00:00.000Z",
+    "description": "Oi eu sou Teteu vendedor Atualizado",
+    "isSeller": true,
+    "vehicle": [],
+    "address": {
+      "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+      "street": "Rua deixe",
+      "number": "1214",
+      "complement": "casa",
+      "zipCode": "12061-000",
+      "city": "Taubatexas",
+      "state": "SP"
+    }
+  }
+]
+```
+
+### Possíveis Erros:
+
+Nenhum, o máximo que pode acontecer é retornar uma lista vazia.
+
+---
+
+### 1.3. **Listar Usuário por ID**
+
+### `/users/:userId`
+
+### Exemplo de Request:
+
+```
+GET /users/:userId
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| userId    | uuid | Identificador único do usuário. |
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+  "fullName": "Matheus Santos",
+  "email": "matheus@mail.com",
+  "cpf": "111.222.333-51",
+  "cellPhone": "12 3445-4002",
+  "birthDate": "1995-11-18T02:00:00.000Z",
+  "description": "Oi eu sou Teteu vendedor Atualizado",
+  "isSeller": true,
+  "vehicle": [],
+  "address": {
+    "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+    "street": "Rua deixe",
+    "number": "1214",
+    "complement": "casa",
+    "zipCode": "12061-000",
+    "city": "Taubatexas",
+    "state": "SP"
+  }
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição          |
+| --------------- | ------------------ |
+| 400 Bad Request | Invalid id format. |
+| 404 Not Found   | User not found.    |
+
+---
+
+### 1.4. **Atualizando um usuário**
+
+### `/users/:userId`
+
+### Exemplo de Request:
+
+```
+PATCH /users/:userId
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| userId    | uuid | Identificador único do usuário. |
+
+### Corpo da Requisição:
+
+```json
+{
+  "fullName": "Matheus Santos",
+  "cellPhone": "12 3445-4002",
+  "description": "Oi eu sou Teteu vendedor Atualizado",
+  "isSeller": false
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+  "fullName": "Matheus Santos",
+  "email": "matheus@mail.com",
+  "cpf": "111.222.333-51",
+  "cellPhone": "12 3445-4002",
+  "birthDate": "1995-11-18T02:00:00.000Z",
+  "description": "Oi eu sou Teteu vendedor Atualizado",
+  "isSeller": true,
+  "address": {
+    "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+    "street": "Rua deixe",
+    "number": "1214",
+    "complement": "casa",
+    "zipCode": "12061-000",
+    "city": "Taubatexas",
+    "state": "SP"
+  }
+}
+```
+
+---
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição                           |
+| --------------- | ----------------------------------- |
+| 400 Bad Request | Invalid id format.                  |
+| 404 Not Found   | User not found.                     |
+| 400 Bad Request | This CPF already exist.             |
+| 400 Bad Request | This email already exist.           |
+| 400 Bad Request | You cannot update address property. |
+| 400 Bad Request | Enter a different password.         |
+
+---
+
+### 1.5. **Atualizando Endereço de um usuário**
+
+### `/users/address/:userId`
+
+### Exemplo de Request:
+
+```
+PATCH /users/:userId
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| userId    | uuid | Identificador único do usuário. |
+
+### Corpo da Requisição:
+
+```json
+{
+  "street": "Rua deixe",
+  "number": "1214",
+  "complement": "casa",
+  "zipCode": "12061-000",
+  "city": "Taubatexas",
+  "state": "SP"
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+  "fullName": "Matheus Santos",
+  "email": "matheus@mail.com",
+  "cpf": "111.222.333-51",
+  "cellPhone": "12 3445-4002",
+  "birthDate": "1995-11-18T02:00:00.000Z",
+  "description": "Oi eu sou Teteu vendedor Atualizado",
+  "isSeller": true,
+  "address": {
+    "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+    "street": "Rua deixe",
+    "number": "1214",
+    "complement": "casa",
+    "zipCode": "12061-000",
+    "city": "Taubatexas",
+    "state": "SP"
+  }
+}
+```
+
+---
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição          |
+| --------------- | ------------------ |
+| 400 Bad Request | Invalid id format. |
+| 404 Not Found   | User not found.    |
+
+---
+
+### 1.6. **Deletar usuário por ID**
+
+### `/users/:userId`
+
+### Exemplo de Request:
+
+```
+DELETE /users/:userId
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Parâmetros da Requisição:
+
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| userId    | uuid | Identificador único do usuário. |
+
+### Corpo da Requisição:
+
+```json
+Vazio
+```
+
+### Exemplo de Response:
+
+```
+204 No Content
+```
+
+```json
+No body returned for response
+```
+
+### Possíveis Erros:
+
+| Código do Erro  | Descrição          |
+| --------------- | ------------------ |
+| 400 Bad Request | Invalid id format. |
+| 404 Not Found   | User not found.    |
+
+---
+
+### 2. /vehicles
+
+O objeto Vehicle é definido como:
+
+| Campo         | Tipo     | Descrição                        |
+| ------------- | -------- | -------------------------------- |
+| id            | uuid     | Identificador único do veículo.  |
+| name          | string   | Nome do veículo.                 |
+| description   | string   | Descrição sobre o veículo.       |
+| km            | string   | Quilometragem rodada do veículo. |
+| year          | string   | Ano de fabricação do veículo.    |
+| coverImage    | string   | Imagem de capa do veículo.       |
+| price         | string   | Preço do veículo.                |
+| type          | string   | Tipo do veículo.                 |
+| vehicleImages | string[] | Galeria de fotos do veículo.     |
+| createdAt     | Date     | Data de registro do veículo.     |
+| updatedAt     | string   | Data de atualização do veículo.  |
+
+### Endpoints
+
+| Método | Rota                 | Descrição                    | Autorizaçao | isSeller | Owner |
+| ------ | -------------------- | ---------------------------- | ----------- | -------- | ----- |
+| POST   | /vehicles            | Criação de um veículo.       | X           | x        |       |
+| GET    | /vehicles            | Lista todos os veículos.     |             |          |       |
+| GET    | /vehicles/:vehicleId | Lista um veículo específico. |             |          |       |
+| PATCH  | /vehicles/:vehicleId | Atualiza o veículo.          | X           | x        | x     |
+| DELETE | /vehicles/:vehicleId | Deleta o veículo.            | X           | x        | x     |
+
+### 2.1. **Criação de Veículo**
+
+### `/vehicles`
+
+### Exemplo de Request:
+
+```
+POST /vehicles
+Authorization: Bearer Token
 Content-type: application/json
 ```
 
@@ -126,7 +541,8 @@ Content-type: application/json
   "year": 2015,
   "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Ferrari_458_goodwood_festival_of_speed_2010.jpg/1200px-Ferrari_458_goodwood_festival_of_speed_2010.jpg",
   "price": 25000,
-  "carPhotos": [
+  "type": "car",
+  "vehiclePhotos": [
     "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg",
     "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg",
     "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg",
@@ -158,21 +574,21 @@ Content-type: application/json
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição                                     |
-| --------------- | --------------------------------------------- |
-| 400 Bad Request | You must add at least one image to your car.  |
-| 400 Bad Request | You can't add more than 6 images to your car. |
+| Código do Erro  | Descrição                                         |
+| --------------- | ------------------------------------------------- |
+| 400 Bad Request | You must add at least one image to your vehicle.  |
+| 400 Bad Request | You can't add more than 6 images to your vehicle. |
 
 ---
 
-### 1.2. **Listando Carros**
+### 2.2. **Listando Veículos**
 
-### `/cars`
+### `/vehicles`
 
 ### Exemplo de Request:
 
 ```
-GET /cars
+GET /vehicles
 Content-type: application/json
 ```
 
@@ -191,23 +607,56 @@ Vazio
 ```json
 [
   {
-    "id": "777e060f-0398-42e8-a57e-c2a16bfc1599",
-    "name": "bmw i8",
-    "description": "carro muito top, que abre as portas pra cima!",
-    "km": "12500.40",
-    "year": 2021,
-    "coverImage": "https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202211/20221125/BMW-I8-1.5-12V-HYBRID-EDRIVE-AUTOMATICO-wmimagem15411192321.jpg",
-    "price": "524000.00",
-    "createdAt": "2022-12-15T17:46:32.339Z",
-    "updatedAt": "2022-12-15T18:53:07.508Z",
-    "carImages": [
+    "id": "b148f5cd-cb06-40ca-aeec-8920f5ec93c9",
+    "name": "Ferrari 458 itália",
+    "description": "carro muito top",
+    "km": "3000.50",
+    "year": 2015,
+    "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Ferrari_458_goodwood_festival_of_speed_2010.jpg/1200px-Ferrari_458_goodwood_festival_of_speed_2010.jpg",
+    "price": "25000.00",
+    "type": "car",
+    "createdAt": "2023-01-04T12:09:41.148Z",
+    "updatedAt": "2023-01-04T12:09:41.148Z",
+    "user": {
+      "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+      "fullName": "Matheus Santos",
+      "email": "matheus@mail.com",
+      "cpf": "111.222.333-51",
+      "cellPhone": "12 3445-4002",
+      "birthDate": "1995-11-18T02:00:00.000Z",
+      "description": "Oi eu sou Teteu vendedor Atualizado",
+      "isSeller": true,
+      "password": "$2a$10$6wmgUv5XlOOH5om5n5DVuOe6IZY6zYUF.8OvgH5yxlKvOdD5ANcVG",
+      "address": {
+        "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+        "street": "Rua deixe",
+        "number": "1214",
+        "complement": "casa",
+        "zipCode": "12061-000",
+        "city": "Taubatexas",
+        "state": "SP"
+      }
+    },
+    "vehicleImages": [
       {
-        "id": "324aad37-7139-4c02-8533-cc4c628bcef8",
-        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsuNF04Y9WYJ-oVwNCUtnWE2v3tLcXqYBQheHbRfRFmw&s"
+        "id": "e28c7d70-41e0-4617-a52e-b437f86b2f56",
+        "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
       },
       {
-        "id": "3b776aed-09d2-446c-a8f7-9cd5701adfbf",
-        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPK59Sb-B8d28e5Zj97NJ-aJraIxKN1qjyqwSnJFR1EQ&s"
+        "id": "ded6fafa-455c-4b5c-89dc-e86a9494c581",
+        "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+      },
+      {
+        "id": "da1186cc-bfa1-42bf-8acc-caa66a698785",
+        "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+      },
+      {
+        "id": "dc9f1a05-afb6-4d86-bb42-d51f173f9d8c",
+        "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+      },
+      {
+        "id": "d717b782-d33a-42f1-b0db-e6aaa9709fa0",
+        "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
       }
     ]
   }
@@ -220,22 +669,22 @@ Nenhum, o máximo que pode acontecer é retornar uma lista vazia.
 
 ---
 
-### 1.3. **Listar Carro por ID**
+### 2.3. **Listar Veículo por ID**
 
-### `/cars/:carId`
+### `/vehicles/:vehicleId`
 
 ### Exemplo de Request:
 
 ```
-GET /cars/:carId
+GET /vehicles/:vehicleId
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro | Tipo | Descrição                     |
-| --------- | ---- | ----------------------------- |
-| carId     | uuid | Identificador único do carro. |
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| vehicleId | uuid | Identificador único do veículo. |
 
 ### Corpo da Requisição:
 
@@ -251,23 +700,56 @@ Vazio
 
 ```json
 {
-  "id": "777e060f-0398-42e8-a57e-c2a16bfc1599",
-  "name": "bmw i8",
+  "id": "b2386146-175a-4ae2-86a9-51272b4c1af0",
+  "name": "Ferrari 458 itália",
   "description": "carro muito top, que abre as portas pra cima!",
   "km": "12500.40",
   "year": 2021,
-  "coverImage": "https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202211/20221125/BMW-I8-1.5-12V-HYBRID-EDRIVE-AUTOMATICO-wmimagem15411192321.jpg",
+  "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Ferrari_458_goodwood_festival_of_speed_2010.jpg/1200px-Ferrari_458_goodwood_festival_of_speed_2010.jpg",
   "price": "524000.00",
-  "createdAt": "2022-12-15T17:46:32.339Z",
-  "updatedAt": "2022-12-15T18:53:07.508Z",
-  "carImages": [
+  "type": "car",
+  "createdAt": "2023-01-04T12:11:39.560Z",
+  "updatedAt": "2023-01-04T12:11:41.478Z",
+  "user": {
+    "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+    "fullName": "Matheus Santos",
+    "email": "matheus@mail.com",
+    "cpf": "111.222.333-51",
+    "cellPhone": "12 3445-4002",
+    "birthDate": "1995-11-18T02:00:00.000Z",
+    "description": "Oi eu sou Teteu vendedor Atualizado",
+    "isSeller": true,
+    "password": "$2a$10$6wmgUv5XlOOH5om5n5DVuOe6IZY6zYUF.8OvgH5yxlKvOdD5ANcVG",
+    "address": {
+      "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+      "street": "Rua deixe",
+      "number": "1214",
+      "complement": "casa",
+      "zipCode": "12061-000",
+      "city": "Taubatexas",
+      "state": "SP"
+    }
+  },
+  "vehicleImages": [
     {
-      "id": "324aad37-7139-4c02-8533-cc4c628bcef8",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsuNF04Y9WYJ-oVwNCUtnWE2v3tLcXqYBQheHbRfRFmw&s"
+      "id": "5e53e269-87f9-4e05-8d95-e5a46bc18f6d",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
     },
     {
-      "id": "3b776aed-09d2-446c-a8f7-9cd5701adfbf",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPK59Sb-B8d28e5Zj97NJ-aJraIxKN1qjyqwSnJFR1EQ&s"
+      "id": "8b8b5b01-6e11-4719-a76d-b1b923c4b84e",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "dc22be8e-0aba-4a72-8b1b-ed02e655f73d",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "d6fd9c69-8010-458c-862d-644ea5004078",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "8aa6d0c5-c16b-4887-9de4-dbcfc4681785",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
     }
   ]
 }
@@ -278,28 +760,29 @@ Vazio
 | Código do Erro  | Descrição          |
 | --------------- | ------------------ |
 | 400 Bad Request | Invalid id format. |
-| 404 Not Found   | Car not found.     |
+| 404 Not Found   | Vehicle not found. |
 
 ---
 
 ---
 
-### 1.4. **Atualizando um carro**
+### 2.4. **Atualizando um carro**
 
-### `/cars/:carId`
+### `/vehicles/:vehicleId`
 
 ### Exemplo de Request:
 
 ```
-PATCH /cars/:carId
+PATCH /vehicles/:vehicleId
+Authorization: Bearer Token
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro | Tipo | Descrição                     |
-| --------- | ---- | ----------------------------- |
-| carId     | uuid | Identificador único do carro. |
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| vehicleId | uuid | Identificador único do veículo. |
 
 ### Corpo da Requisição:
 
@@ -308,11 +791,7 @@ Content-type: application/json
   "description": "carro muito top, que abre as portas pra cima!",
   "km": 12500.4,
   "year": 2021,
-  "price": 524000,
-  "carPhotos": [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsuNF04Y9WYJ-oVwNCUtnWE2v3tLcXqYBQheHbRfRFmw&s",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPK59Sb-B8d28e5Zj97NJ-aJraIxKN1qjyqwSnJFR1EQ&s"
-  ]
+  "price": 524000
 }
 ```
 
@@ -324,16 +803,38 @@ Content-type: application/json
 
 ```json
 {
-  "id": "777e060f-0398-42e8-a57e-c2a16bfc1599",
-  "name": "bmw i8",
+  "id": "b2386146-175a-4ae2-86a9-51272b4c1af0",
+  "name": "Ferrari 458 itália",
   "description": "carro muito top, que abre as portas pra cima!",
   "km": "12500.40",
   "year": 2021,
-  "coverImage": "https://image.webmotors.com.br/_fotos/AnuncioUsados/gigante/2022/202211/20221125/BMW-I8-1.5-12V-HYBRID-EDRIVE-AUTOMATICO-wmimagem15411192321.jpg",
+  "coverImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Ferrari_458_goodwood_festival_of_speed_2010.jpg/1200px-Ferrari_458_goodwood_festival_of_speed_2010.jpg",
   "price": "524000.00",
-  "createdAt": "2022-12-15T17:46:32.339Z",
-  "updatedAt": "2022-12-15T18:53:07.508Z",
-  "carImages": []
+  "type": "car",
+  "createdAt": "2023-01-04T12:11:39.560Z",
+  "updatedAt": "2023-01-04T12:11:41.478Z",
+  "vehicleImages": [
+    {
+      "id": "5e53e269-87f9-4e05-8d95-e5a46bc18f6d",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "8b8b5b01-6e11-4719-a76d-b1b923c4b84e",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "dc22be8e-0aba-4a72-8b1b-ed02e655f73d",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "d6fd9c69-8010-458c-862d-644ea5004078",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    },
+    {
+      "id": "8aa6d0c5-c16b-4887-9de4-dbcfc4681785",
+      "url": "https://autolivraria.com.br/bc/wp-content/uploads/2014/10/Ferrari-458-Italia-2009-02.jpg"
+    }
+  ]
 }
 ```
 
@@ -341,31 +842,32 @@ Content-type: application/json
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição                                     |
-| --------------- | --------------------------------------------- |
-| 400 Bad Request | Invalid id format.                            |
-| 404 Not Found   | Car not found.                                |
-| 400 Bad Request | You must add at least one image to your car.  |
-| 400 Bad Request | You can't add more than 6 images to your car. |
+| Código do Erro  | Descrição                                         |
+| --------------- | ------------------------------------------------- |
+| 400 Bad Request | Invalid id format.                                |
+| 404 Not Found   | Vehicle not found.                                |
+| 400 Bad Request | You must add at least one image to your vehicle.  |
+| 400 Bad Request | You can't add more than 6 images to your vehicle. |
 
 ---
 
-### 1.5. **Deletar carro por ID**
+### 2.5. **Deletar veículo por ID**
 
-### `/cars/:carId`
+### `/vehicles/:vehicleId`
 
 ### Exemplo de Request:
 
 ```
-DELETE /cars/:carId
+DELETE /vehicles/:vehicleId
+Authorization: Bearer Token
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro | Tipo | Descrição                     |
-| --------- | ---- | ----------------------------- |
-| carId     | uuid | Identificador único do carro. |
+| Parâmetro | Tipo | Descrição                       |
+| --------- | ---- | ------------------------------- |
+| vehicleId | uuid | Identificador único do veículo. |
 
 ### Corpo da Requisição:
 
@@ -392,43 +894,24 @@ No body returned for response
 
 ---
 
------------------------- AAQQUUII --------------------------------------------------------
+### 3. /login
 
-### 2. /motorcycles
-
-O objeto User é definido como:
-
-| Campo            | Tipo     | Descrição                     |
-| ---------------- | -------- | ----------------------------- |
-| id               | uuid     | Identificador único da moto.  |
-| name             | string   | Nome da moto.                 |
-| description      | string   | Descrição sobre a moto.       |
-| km               | string   | Quilometragem rodada da moto. |
-| year             | string   | Ano de fabricação da moto.    |
-| coverImage       | string   | Imagem de capa da moto.       |
-| price            | string   | Preço da moto.                |
-| motorcycleImages | string[] | Galeria de fotos da moto.     |
-| createdAt        | Date     | Data de registro da moto.     |
-| updatedAt        | string   | Data de atualização da moto.  |
+Rota destinada para fazer a autenticação de um usuário.
 
 ### Endpoints
 
-| Método | Rota                       | Descrição                  |
-| ------ | -------------------------- | -------------------------- |
-| POST   | /motorcycles               | Criação de uma moto.       |
-| GET    | /motorcycles               | Lista todos as motos.      |
-| GET    | /motorcycles/:motorcycleId | Lista uma moto específica. |
-| PATCH  | /motorcycles/:motorcycleId | Atualiza a moto.           |
-| DELETE | /motorcycles/:motorcycleId | Deleta a moto.             |
+| Método | Rota   | Descrição                   |
+| ------ | ------ | --------------------------- |
+| POST   | /login | Autenticação de um usuário. |
 
-### 1.1. **Criação de Moto**
+### 3.1. **Login de Usuário**
 
-### `/motorcycles`
+### `/login`
 
 ### Exemplo de Request:
 
 ```
-POST /motorcycles
+POST /login
 Content-type: application/json
 ```
 
@@ -436,19 +919,74 @@ Content-type: application/json
 
 ```json
 {
-  "name": "fazer 300",
-  "description": "a braba",
-  "km": 15000.5,
-  "year": 2016,
-  "coverImage": "https://storage.googleapis.com/images-homolog-moto.usadosbr.com/img/2017/11/10/img123467-1510347023-v653x354.jpg",
-  "price": 22000,
-  "motorcyclePhotos": [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBBiWz8oTMvICQcvP6mROzHD9w4tF7giOzbuicvPQB9jjonQf-U3GC5LPWANeCE7qT0yA&usqp=CAU",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBBiWz8oTMvICQcvP6mROzHD9w4tF7giOzbuicvPQB9jjonQf-U3GC5LPWANeCE7qT0yA&usqp=CAU",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBBiWz8oTMvICQcvP6mROzHD9w4tF7giOzbuicvPQB9jjonQf-U3GC5LPWANeCE7qT0yA&usqp=CAU",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBBiWz8oTMvICQcvP6mROzHD9w4tF7giOzbuicvPQB9jjonQf-U3GC5LPWANeCE7qT0yA&usqp=CAU",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBBiWz8oTMvICQcvP6mROzHD9w4tF7giOzbuicvPQB9jjonQf-U3GC5LPWANeCE7qT0yA&usqp=CAU"
-  ]
+  "email": "matheus@mail.com",
+  "password": "1234"
+}
+```
+
+### Exemplo de Response:
+
+```
+200 OK
+```
+
+```json
+{
+  "userId": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+  "isSeller": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsTmFtZSI6Ik1hdGhldXMgU2FudG9zIiwiZW1haWwiOiJtYXRoZXVzQG1haWwuY29tIiwiY3BmIjoiMTExLjIyMi4zMzMtNTEiLCJpc1NlbGxlciI6dHJ1ZSwiaWF0IjoxNjcyOTM5MDE1LCJleHAiOjE2NzI5NTcwMTUsInN1YiI6IjFjZmVlZGU5LWMxOGQtNDVhOS1hN2MyLTNhNTA5NWZkZDc4NCJ9.VO0gVFVaSbscdf5IrcNrV97ZusYU56bk1dDSz4Hnl6w"
+}
+```
+
+### Possíveis Erros:
+
+| Código do Erro | Descrição                  |
+| -------------- | -------------------------- |
+| 403 Forbidden  | Invalid email or password. |
+
+---
+
+### 4. /comments
+
+O objeto Comment é definido como:
+
+| Campo     | Tipo        | Descrição                          |
+| --------- | ----------- | ---------------------------------- |
+| id        | uuid        | Identificador único do comentário. |
+| text      | string      | Comentário do usuário.             |
+| userId    | foreign key | Usuário dono do comentário.        |
+| vehicleId | foreign key | Veículo comentado pelo usuário.    |
+| createdAt | Date        | Data de registro do comentário.    |
+| updatedAt | string      | Data de atualização do comentário. |
+
+### Endpoints
+
+| Método | Rota                 | Descrição                       | Autorizaçao | Owner |
+| ------ | -------------------- | ------------------------------- | ----------- | ----- |
+| POST   | /comments            | Criação de um comentário.       | X           |       |
+| GET    | /comments            | Lista todos os comentários.     |             |       |
+| GET    | /comments/:commentId | Lista um comentário específico. |             |       |
+| PATCH  | /comments/:commentId | Atualiza o comentário.          | X           | x     |
+| DELETE | /comments/:commentId | Deleta o comentário.            | X           | x     |
+
+### 4.1. **Criação de Comentário**
+
+### `/comments`
+
+### Exemplo de Request:
+
+```
+POST /comments
+Authorization: Bearer Token
+Content-type: application/json
+```
+
+### Corpo da Requisição:
+
+```json
+{
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "vehicleId": "247db553-ccd4-448d-889d-d8b794c32b48"
 }
 ```
 
@@ -460,35 +998,86 @@ Content-type: application/json
 
 ```json
 {
-  "name": "fazer 300",
-  "description": "a braba",
-  "km": 15000.5,
-  "year": 2016,
-  "coverImage": "https://storage.googleapis.com/images-homolog-moto.usadosbr.com/img/2017/11/10/img123467-1510347023-v653x354.jpg",
-  "price": 22000,
-  "id": "913a7574-00b6-43e8-a4b2-165b69e68a90",
-  "createdAt": "2022-12-20T20:28:16.225Z",
-  "updatedAt": "2022-12-20T20:28:16.225Z"
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegre",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
+    }
+  },
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  },
+  "id": "004a69bf-a799-4920-86f6-c549cacc7958",
+  "createdAt": "2023-01-06T18:28:42.664Z",
+  "updatedAt": "2023-01-06T18:28:42.664Z"
 }
 ```
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição                                            |
-| --------------- | ---------------------------------------------------- |
-| 400 Bad Request | You must add at least one image to your motorcycle.  |
-| 400 Bad Request | You can't add more than 6 images to your motorcycle. |
+| Código do Erro  | Descrição                  |
+| --------------- | -------------------------- |
+| 400 Bad Request | You must create a text.    |
+| 400 Bad Request | You must send vehicleId.   |
+| 400 Bad Request | Vehicle invalid id format. |
+| 404 Not Found   | User not found.            |
+| 404 Not Found   | Vehicle not found.         |
 
 ---
 
-### 1.2. **Listando Motos**
+### 4.2. **Listando Comentários**
 
-### `/motorcycles`
+### `/comments`
 
 ### Exemplo de Request:
 
 ```
-GET /motorcycles
+GET /comments
 Content-type: application/json
 ```
 
@@ -507,21 +1096,82 @@ Vazio
 ```json
 [
   {
-    "id": "e8fe7f56-e775-4e92-96ba-bceb1879ef70",
-    "name": "Kawazaki Ninja Z750",
-    "description": "é muto linda verde, braba!",
-    "km": "304.40",
-    "year": 2023,
-    "coverImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqeEwr352Xh4Vowq-aZd1OfLrrBqiCfbnGyXFFg2i3Sg&s",
-    "price": "124000.00",
-    "createdAt": "2022-12-15T19:44:13.474Z",
-    "updatedAt": "2022-12-15T20:14:21.632Z",
-    "motorcycleImages": [
-      {
-        "id": "8742cfcd-fa25-4fb7-aff4-2d8a70c61ad2",
-        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQg4KhJrcx_un2_TEnzarVxJVddEkEv8Z589EJrgNW&s"
+    "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+    "text": "Que carro bonito, e aparentemente está bem conservado!",
+    "createdAt": "2023-01-06T19:52:40.781Z",
+    "updatedAt": "2023-01-06T19:52:40.781Z",
+    "vehicle": {
+      "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+      "name": "Honda Civic 2020",
+      "description": "Carro 4p Flex 1.8",
+      "km": "38250.00",
+      "year": 2020,
+      "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+      "price": "120000.00",
+      "type": "car",
+      "createdAt": "2023-01-06T15:19:11.822Z",
+      "updatedAt": "2023-01-06T15:23:09.833Z",
+      "user": {
+        "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+        "fullName": "Matheus Santos",
+        "email": "matheus@mail.com",
+        "cpf": "111.222.333-51",
+        "cellPhone": "12 3445-4002",
+        "birthDate": "1995-11-18T02:00:00.000Z",
+        "description": "Oi eu sou Teteu vendedor Atualizado 2",
+        "isSeller": true,
+        "address": {
+          "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+          "street": "Rua deixe",
+          "number": "1214",
+          "complement": "casa",
+          "zipCode": "12061-000",
+          "city": "Taubatexas",
+          "state": "SP"
+        }
+      },
+      "vehicleImages": [
+        {
+          "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        },
+        {
+          "id": "09c42332-566e-4417-9afa-d09912282b1f",
+          "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+        }
+      ]
+    },
+    "user": {
+      "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+      "fullName": "Rafael Santos",
+      "email": "rafael@mail.com",
+      "cpf": "121.234.323-60",
+      "cellPhone": "15 99120-1020",
+      "birthDate": "1998-08-24T03:00:00.000Z",
+      "description": "Comprador alegere",
+      "isSeller": false,
+      "address": {
+        "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+        "street": "Rua Dois",
+        "number": "2",
+        "complement": "casa",
+        "zipCode": "12061000",
+        "city": "Taubaté",
+        "state": "SP"
       }
-    ]
+    }
   }
 ]
 ```
@@ -532,22 +1182,22 @@ Nenhum, o máximo que pode acontecer é retornar uma lista vazia.
 
 ---
 
-### 1.3. **Listar Moto por ID**
+### 4.3. **Listar Comentário por ID**
 
-### `/motorcycles/:motorcycleId`
+### `/comments/:commentId`
 
 ### Exemplo de Request:
 
 ```
-GET /motorcycles/:motorcycleId
+GET /comments/:commentId
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro    | Tipo | Descrição                    |
-| ------------ | ---- | ---------------------------- |
-| motorcycleId | uuid | Identificador único da moto. |
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
 
 ### Corpo da Requisição:
 
@@ -563,60 +1213,119 @@ Vazio
 
 ```json
 {
-  "id": "e8fe7f56-e775-4e92-96ba-bceb1879ef70",
-  "name": "Kawazaki Ninja Z750",
-  "description": "é muto linda verde, braba!",
-  "km": "304.40",
-  "year": 2023,
-  "coverImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqeEwr352Xh4Vowq-aZd1OfLrrBqiCfbnGyXFFg2i3Sg&s",
-  "price": "124000.00",
-  "createdAt": "2022-12-15T19:44:13.474Z",
-  "updatedAt": "2022-12-15T20:14:21.632Z",
-  "motorcycleImages": [
-    {
-      "id": "8742cfcd-fa25-4fb7-aff4-2d8a70c61ad2",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQg4KhJrcx_un2_TEnzarVxJVddEkEv8Z589EJrgNW&s"
+  "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+  "text": "Que carro bonito, e aparentemente está bem conservado!",
+  "createdAt": "2023-01-06T19:52:40.781Z",
+  "updatedAt": "2023-01-06T19:52:40.781Z",
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "user": {
+      "id": "1cfeede9-c18d-45a9-a7c2-3a5095fdd784",
+      "fullName": "Matheus Santos",
+      "email": "matheus@mail.com",
+      "cpf": "111.222.333-51",
+      "cellPhone": "12 3445-4002",
+      "birthDate": "1995-11-18T02:00:00.000Z",
+      "description": "Oi eu sou Teteu vendedor Atualizado 2",
+      "isSeller": true,
+      "address": {
+        "id": "fe715ee2-12af-4823-b9a9-397c024d141a",
+        "street": "Rua deixe",
+        "number": "1214",
+        "complement": "casa",
+        "zipCode": "12061-000",
+        "city": "Taubatexas",
+        "state": "SP"
+      }
+    },
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  },
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegere",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
     }
-  ]
+  }
 }
 ```
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição             |
-| --------------- | --------------------- |
-| 400 Bad Request | Invalid id format.    |
-| 404 Not Found   | Motorcycle not found. |
+| Código do Erro  | Descrição          |
+| --------------- | ------------------ |
+| 400 Bad Request | Invalid id format. |
+| 404 Not Found   | Comment not found. |
 
 ---
 
 ---
 
-### 1.4. **Atualizando uma moto**
+### 4.4. **Atualizando um comentário**
 
-### `/motorcycles/:motorcycleId`
+### `/comments/:commentId`
 
 ### Exemplo de Request:
 
 ```
-PATCH /motorcycle/:motorcycleId
+PATCH /comments/:commentId
+Authorization: Bearer Token
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro    | Tipo | Descrição                    |
-| ------------ | ---- | ---------------------------- |
-| motorcycleId | uuid | Identificador único da moto. |
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
 
 ### Corpo da Requisição:
 
 ```json
 {
-  "description": "é muto linda verde, braba!",
-  "km": 304.4,
-  "year": 2023,
-  "price": 124000
+  "text": "Que carro bonito, comentário atualizado de novo."
 }
 ```
 
@@ -628,21 +1337,63 @@ Content-type: application/json
 
 ```json
 {
-  "id": "e8fe7f56-e775-4e92-96ba-bceb1879ef70",
-  "name": "Kawazaki Ninja Z750",
-  "description": "é muto linda verde, braba!",
-  "km": "304.40",
-  "year": 2023,
-  "coverImage": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqeEwr352Xh4Vowq-aZd1OfLrrBqiCfbnGyXFFg2i3Sg&s",
-  "price": "124000.00",
-  "createdAt": "2022-12-15T19:44:13.474Z",
-  "updatedAt": "2022-12-15T20:14:21.632Z",
-  "motorcycleImages": [
-    {
-      "id": "8742cfcd-fa25-4fb7-aff4-2d8a70c61ad2",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQg4KhJrcx_un2_TEnzarVxJVddEkEv8Z589EJrgNW&s"
+  "id": "c15ceb28-6f3a-468a-9890-67b5ef36553e",
+  "text": "Que carro bonito, comentário atualizado de novo.",
+  "createdAt": "2023-01-06T19:52:40.781Z",
+  "updatedAt": "2023-01-06T19:58:17.756Z",
+  "user": {
+    "id": "d353e5eb-fb93-4d27-90ce-5cc8df1f6bf5",
+    "fullName": "Rafael Santos",
+    "email": "rafael@mail.com",
+    "cpf": "121.234.323-60",
+    "cellPhone": "15 99120-1020",
+    "birthDate": "1998-08-24T03:00:00.000Z",
+    "description": "Comprador alegere",
+    "isSeller": false,
+    "address": {
+      "id": "d3d80bd0-79b2-4c24-a6a9-0b4f382fcb4d",
+      "street": "Rua Dois",
+      "number": "2",
+      "complement": "casa",
+      "zipCode": "12061000",
+      "city": "Taubaté",
+      "state": "SP"
     }
-  ]
+  },
+  "vehicle": {
+    "id": "247db553-ccd4-448d-889d-d8b794c32b48",
+    "name": "Honda Civic 2020",
+    "description": "Carro 4p Flex 1.8",
+    "km": "38250.00",
+    "year": 2020,
+    "coverImage": "https://autoentusiastas.com.br/ae/wp-content/uploads/2019/08/Civic-EXL-2020-15-abre-1140x720.jpg",
+    "price": "120000.00",
+    "type": "car",
+    "createdAt": "2023-01-06T15:19:11.822Z",
+    "updatedAt": "2023-01-06T15:23:09.833Z",
+    "vehicleImages": [
+      {
+        "id": "09c42332-566e-4417-9afa-d09912282b1f",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "c4ba8682-1037-4d6b-82a6-5886c3630279",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "5fdcdf01-c77d-4fb3-a144-36c72ae7ec6e",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "36452ebd-2806-4825-b157-eb4893480b4d",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      },
+      {
+        "id": "6047c55a-6b69-4c96-b136-038a7b5dbd2c",
+        "url": "https://www.automaistv.com.br/wp-content/uploads/2019/08/4-2.jpg"
+      }
+    ]
+  }
 }
 ```
 
@@ -650,31 +1401,32 @@ Content-type: application/json
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição                                            |
-| --------------- | ---------------------------------------------------- |
-| 400 Bad Request | Invalid id format.                                   |
-| 404 Not Found   | Car not found.                                       |
-| 400 Bad Request | You must add at least one image to your motorcycle.  |
-| 400 Bad Request | You can't add more than 6 images to your motorcycle. |
+| Código do Erro   | Descrição                                        |
+| ---------------- | ------------------------------------------------ |
+| 400 Bad Request  | Invalid id format.                               |
+| 400 Bad Request  | You cannot update property vehicle from comment. |
+| 404 Not Found    | Comment not found.                               |
+| 401 Unauthorized | You must be comment owner to access this.        |
 
 ---
 
-### 1.5. **Deletar moto por ID**
+### 4.5. **Deletar comentário por ID**
 
-### `/motorcycles/:motorcycleId`
+### `/comments/:commentId`
 
 ### Exemplo de Request:
 
 ```
-DELETE /motorcycles/:motorcycleId
+DELETE /comments/:commentId
+Authorization: Bearer Token
 Content-type: application/json
 ```
 
 ### Parâmetros da Requisição:
 
-| Parâmetro    | Tipo | Descrição                    |
-| ------------ | ---- | ---------------------------- |
-| motorcycleId | uuid | Identificador único da moto. |
+| Parâmetro | Tipo | Descrição                          |
+| --------- | ---- | ---------------------------------- |
+| commentId | uuid | Identificador único do comentário. |
 
 ### Corpo da Requisição:
 
@@ -694,9 +1446,8 @@ No body returned for response
 
 ### Possíveis Erros:
 
-| Código do Erro  | Descrição             |
-| --------------- | --------------------- |
-| 400 Bad Request | Invalid id format.    |
-| 404 Not Found   | Motorcycle not found. |
-
----
+| Código do Erro   | Descrição                                 |
+| ---------------- | ----------------------------------------- |
+| 400 Bad Request  | Invalid id format.                        |
+| 404 Not Found    | Comment not found.                        |
+| 401 Unauthorized | You must be comment owner to access this. |
