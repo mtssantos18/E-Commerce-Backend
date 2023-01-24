@@ -37,7 +37,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "dev": "tsnd --ignore-watch node_modules --rs --cls src/server.ts",
+    "dev": "ts-node-dev --ignore-watch node_modules --rs --cls src/server.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "test": "cross-env NODE_ENV=test SECRET_KEY=123456a jest"
   }
